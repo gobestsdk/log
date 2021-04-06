@@ -2,7 +2,7 @@ package log
 
 import (
 	"encoding/json"
-	"goapp/trace"
+	"github.com/gobestsdk/trace"
 
 	"os"
 	"sync"
