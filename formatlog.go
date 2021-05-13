@@ -3,7 +3,8 @@ package log
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/yaml.v2"
+
+	"gopkg.in/yaml.v3"
 	"runtime"
 	"runtime/debug"
 	"strconv"
@@ -38,8 +39,6 @@ func SetSerializationtype(t string) {
 func SetCodefile(show bool) {
 	showtracefile = show
 }
-
-type Fields map[string]interface{}
 
 func Setlogfile(f string) {
 	writelog = true
