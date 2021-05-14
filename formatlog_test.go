@@ -7,3 +7,10 @@ func TestPrint(t *testing.T) {
 		"test": "ok",
 	})
 }
+
+func TestInfo(t *testing.T) {
+	SetSerializationtype("table")
+	Info(Fields{
+		"test": "ok",
+	})
+}

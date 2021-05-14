@@ -22,8 +22,8 @@ const (
 var (
 	logpath           string = "log"
 	level             int
-	serializationtype string
-	writelog          bool = false
+	serializationtype string = "json"
+	writelog          bool   = false
 
 	//showtracefile 是否显示代码
 	showtime      bool = false
@@ -101,8 +101,27 @@ func console_printjson(l int, arg map[string]interface{}) {
 	fmt.Println(s)
 
 }
+func console_table(arg map[string]interface{}) {
+	bs, err := Fields(arg).Marshal()
+	if err != nil {
+		println(err.Error())
+	}
+	fmt.Println(string(bs))
+}
+func console_printmap(l int, arg map[string]interface{}) {
 
-func print(l int, arg map[string]interface{}) {
+	switch serializationtype {
+	case "json":
+		fallthrough
+	case "yaml":
+		console_printjson(l, arg)
+	case "table":
+		console_table(arg)
+	}
+
+}
+
+func printfixedmap(l int, arg map[string]interface{}) {
 	arg["_"] = time.Now().String()[:19]
 
 	var file string
@@ -121,35 +140,36 @@ func print(l int, arg map[string]interface{}) {
 	}
 
 	if l >= level && writelog {
-		base_print(arg)
+		a, _ := json.Marshal(arg)
+		base_print(string(a))
 	}
-	console_printjson(l, arg)
+	console_printmap(l, arg)
 }
 
 var Warnmsgfunc, Errormsgfunc func(arg map[string]interface{})
 
 func Print(arg map[string]interface{}) {
-	print(0, arg)
+	printfixedmap(0, arg)
 }
 
 func Info(arg map[string]interface{}) {
-	print(1, arg)
+	printfixedmap(1, arg)
 }
 
 func Warn(arg map[string]interface{}) {
-	print(2, arg)
+	printfixedmap(2, arg)
 	if Warnmsgfunc != nil {
 		Warnmsgfunc(arg)
 	}
 }
 
 func Error(arg map[string]interface{}) {
-	print(3, arg)
+	printfixedmap(3, arg)
 	if Errormsgfunc != nil {
 		Errormsgfunc(arg)
 	}
 }
 
 func Fatal(arg map[string]interface{}) {
-	print(4, arg)
+	printfixedmap(4, arg)
 }

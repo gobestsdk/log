@@ -1,7 +1,6 @@
 package log
 
 import (
-	"encoding/json"
 	"github.com/gobestsdk/trace"
 
 	"os"
@@ -11,7 +10,7 @@ import (
 )
 
 type buffer struct {
-	Data      [1000]map[string]interface{}
+	Data      [1000]string
 	idxpr     *int32
 	Pre, Next *buffer
 }
@@ -29,7 +28,7 @@ var (
 	buffer_lock        sync.Mutex
 )
 
-func base_print(arg map[string]interface{}) {
+func base_print(arg string) {
 	if buffersw == nil {
 		buffersw = pool.Get().(*buffer)
 	}
@@ -56,7 +55,7 @@ re:
 	makefile()
 	afs, err := os.OpenFile(logpath, os.O_APPEND|os.O_RDWR, os.ModeAppend)
 	if err != nil {
-		console_printjson(INFO, Fields{"log": "open log file", "err": err})
+		console_printmap(INFO, Fields{"log": "open log file", "err": err})
 		return
 	}
 	Info(Fields{
@@ -77,9 +76,8 @@ re:
 
 		for i := int32(0); buffersr != nil && i < *buffersr.idxpr; i++ {
 			arg := buffersr.Data[i]
-			bs, _ := json.Marshal(arg)
-			afs.Write(bs)
-			afs.Write([]byte("\n"))
+			bs := arg
+			afs.WriteString(bs + "\n")
 		}
 	}
 	goto re
