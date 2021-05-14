@@ -1,5 +1,7 @@
 github.com/gobestsdk/trace v0.0.0-20210514025643-d2a74b25462f h1:gbyzJeObYkRtLdu0l+KfxnrzQidSyjdzDrUbk/mHTKY=
 github.com/gobestsdk/trace v0.0.0-20210514025643-d2a74b25462f/go.mod h1:VIKDS8FoFuVrryMApojUgXxbw9/A/CWwgrIkbfejBXY=
+github.com/gobestsdk/types v0.0.0-20210427133911-9a74719f9f4b h1:YGVkSQ4lz5XmfuNkxBLrEMSduVfhPMvKs7Asio1qSW8=
+github.com/gobestsdk/types v0.0.0-20210427133911-9a74719f9f4b/go.mod h1:rzJ3TJ4fC+BF7QRoYzn+p9Llof/I4bACZr3tYF6khOE=
 github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/QdE+0=
 github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=

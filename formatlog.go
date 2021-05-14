@@ -1,16 +1,5 @@
 package log
 
-import (
-	"encoding/json"
-	"fmt"
-
-	"gopkg.in/yaml.v3"
-	"runtime"
-	"runtime/debug"
-	"strconv"
-	"time"
-)
-
 const (
 	PRINT = 0
 	INFO  = 1
@@ -48,113 +37,19 @@ func Setlevel(l int) {
 	level = l
 }
 
-func console_printjson(l int, arg map[string]interface{}) {
-
-	var c Colortext
-	var pre bool
-	switch l {
-	case PRINT:
-		c = Black
-	case INFO:
-		c = Pink
-	case WARN:
-		c = Yellow
-	case ERROR:
-		c = LightRed
-	case FATAL:
-		c = Red
-	}
-	s := string(c)
-	if showtime || l >= WARN {
-		s = s + arg["_"].(string)
-		pre = true
-	}
-	if showtracefile || l >= WARN {
-		if t, exist := arg["_trace"]; !exist || t == nil {
-		} else {
-			s = s + " " + arg["_trace"].(string)
-			pre = true
-		}
-	}
-
-	delete(arg, "_")
-	delete(arg, "_trace")
-	var bs []byte
-	var err error
-	switch serializationtype {
-	case "yaml":
-		bs, err = yaml.Marshal(arg)
-	default:
-		bs, err = json.Marshal(arg)
-
-	}
-
-	if err != nil {
-		println(err.Error())
-	}
-	if pre {
-		s = s + "\t" + string(bs) + string(EndColor)
-	} else {
-		s = s + string(bs) + string(EndColor)
-	}
-
-	fmt.Println(s)
-
-}
-func console_table(arg map[string]interface{}) {
-	bs, err := Fields(arg).Marshal()
-	if err != nil {
-		println(err.Error())
-	}
-	fmt.Println(string(bs))
-}
-func console_printmap(l int, arg map[string]interface{}) {
-
-	switch serializationtype {
-	case "json":
-		fallthrough
-	case "yaml":
-		console_printjson(l, arg)
-	case "table":
-		console_table(arg)
-	}
-
-}
-
-func printfixedmap(l int, arg map[string]interface{}) {
-	arg["_"] = time.Now().String()[:19]
-
-	var file string
-	var line int
-	var ok bool
-	if l >= FATAL {
-		_, file, line, ok = runtime.Caller(3)
-		debug.PrintStack()
-	} else {
-		_, file, line, ok = runtime.Caller(2)
-	}
-
-	if ok {
-		//f := runtime.FuncForPC(pc)
-		arg["_trace"] = file + ":" + strconv.Itoa(line)
-	}
-
-	if l >= level && writelog {
-		a, _ := json.Marshal(arg)
-		base_print(string(a))
-	}
-	console_printmap(l, arg)
-}
-
-var Warnmsgfunc, Errormsgfunc func(arg map[string]interface{})
-
 func Print(arg map[string]interface{}) {
 	printfixedmap(0, arg)
+}
+
+func PrintStruct(arg Struct) {
+	printfixedstruct(0, arg)
 }
 
 func Info(arg map[string]interface{}) {
 	printfixedmap(1, arg)
 }
+
+var Warnmsgfunc, Errormsgfunc func(arg map[string]interface{})
 
 func Warn(arg map[string]interface{}) {
 	printfixedmap(2, arg)
