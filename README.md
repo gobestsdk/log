@@ -1,3 +1,3 @@
 # log
 
-![](example.png)
+![图片](example.png)
